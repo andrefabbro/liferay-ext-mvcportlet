@@ -1,0 +1,30 @@
+group 'com.liferay.portal.ext'
+version '0.0.1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+	mavenLocal()
+    jcenter()
+}
+
+ext { 
+	liferayVersion = '6.2.10.15'
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+	compile "com.liferay.portal:portal-service:$liferayVersion"
+	compile "com.liferay.portal:util-bridges:$liferayVersion"
+	
+	compile "javax.portlet:portlet-api:2.0"
+	compile "javax.servlet:servlet-api:2.4"
+	
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-core:2.+"
+}
