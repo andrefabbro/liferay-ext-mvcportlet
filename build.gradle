@@ -7,6 +7,9 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 repositories {
+	maven {
+		url "http://10.2.10.53/nexus/content/groups/public"
+	}
 	mavenLocal()
     jcenter()
 }
@@ -28,3 +31,33 @@ dependencies {
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"
 }
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: "http://10.2.10.53/nexus/content/repositories/snapshots/") {
+				authentication(userName: "admin", password: "admin123")
+			}
+			pom.version = "0.0.1-SNAPSHOT"
+			pom.artifactId = "mvcportlet-extension"
+			pom.groupId = "com.liferay.portal.ext"
+		}
+	}
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+
+artifacts {
+	archives sourcesJar
+	archives javadocJar
+}
+
+
