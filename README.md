@@ -16,24 +16,6 @@ gradle install
 	<groupId>com.liferay.portal.ext</groupId>
 	<artifactId>mvcportlet-extension</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<exclusions>
-		<exclusion>
-			<groupId>com.liferay.portal</groupId>
-			<artifactId>portal-service</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>com.liferay.portal</groupId>
-			<artifactId>util-bridges</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>javax.portlet</groupId>
-			<artifactId>portlet-api</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</exclusion>
-	</exclusions>
 </dependency>
 ```
 
