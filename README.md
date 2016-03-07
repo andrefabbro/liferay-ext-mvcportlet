@@ -71,5 +71,3 @@ In your JSP, just add a parameter named *javax.portlet.action* with the value of
 	<portlet:param name="javax.portlet.action" value="resourceMethodTwo" />
 </portlet:resourceURL>
 ```
-
-
