@@ -71,3 +71,7 @@ In your JSP, just add a parameter named *javax.portlet.action* with the value of
 	<portlet:param name="javax.portlet.action" value="resourceMethodTwo" />
 </portlet:resourceURL>
 ```
+
+## Portlet Example
+
+You can find an example of that in the follow link: https://github.com/andrefabbro/liferay-ext-mvcportlet-example
