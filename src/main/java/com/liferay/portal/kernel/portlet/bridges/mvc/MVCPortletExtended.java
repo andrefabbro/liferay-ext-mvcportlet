@@ -14,6 +14,7 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,6 +30,7 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -214,6 +216,19 @@ public class MVCPortletExtended extends MVCPortlet {
 			.put(actionName, method);
 
 		return method;
+	}
+
+	protected <T> T getJSONFromRequest(ResourceRequest request, Class<T> clazz)  {
+		StringBuilder buffer = new StringBuilder();
+		try (BufferedReader reader = request.getReader()) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				buffer.append(line);
+			}
+		} catch (IOException e) {
+			return null;
+		}
+		return new Gson().fromJson(buffer.toString(), clazz);
 	}
 
 	private void genericResponse(ResourceResponse response, Object object) throws IOException {
