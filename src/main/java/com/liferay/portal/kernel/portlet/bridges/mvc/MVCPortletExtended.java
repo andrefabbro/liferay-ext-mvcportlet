@@ -28,6 +28,7 @@ import javax.portlet.PortletResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -40,6 +41,8 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  * @author Andre Fabbro
  */
 public class MVCPortletExtended extends MVCPortlet {
+
+	protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
 	@Override
 	public void serveResource(
@@ -160,8 +163,8 @@ public class MVCPortletExtended extends MVCPortlet {
 		try {
 			Method method = getResourceMethod(actionName);
 
-			method
-				.invoke(this, resourceRequest, resourceResponse);
+			Object invoke = method.invoke(this, resourceRequest, resourceResponse);
+			genericResponse(resourceResponse, invoke);
 
 			return true;
 		}
@@ -211,6 +214,12 @@ public class MVCPortletExtended extends MVCPortlet {
 			.put(actionName, method);
 
 		return method;
+	}
+
+	private void genericResponse(ResourceResponse response, Object object) throws IOException {
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		JSON_MAPPER.writeValue(response.getPortletOutputStream(), object);
 	}
 
 	private final Map<String, Method> _resourceMethods =

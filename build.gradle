@@ -1,5 +1,5 @@
 group 'com.liferay.portal.ext'
-version '0.0.1-SNAPSHOT'
+version '0.0.2-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -14,7 +14,7 @@ repositories {
 }
 
 ext { 
-	liferayVersion = '6.2.10.15'
+	liferayVersion = '6.2.1'
 }
 
 sourceCompatibility = 1.7
@@ -26,37 +26,10 @@ dependencies {
 	
 	compile "javax.portlet:portlet-api:2.0"
 	compile "javax.servlet:servlet-api:2.4"
+	compile "com.fasterxml.jackson.core:jackson-databind:2.3.3"
 	
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"
-}
-
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			repository(url: "http://10.2.10.53/nexus/content/repositories/snapshots/") {
-				authentication(userName: "admin", password: "admin123")
-			}
-			pom.version = "0.0.1-SNAPSHOT"
-			pom.artifactId = "mvcportlet-extension"
-			pom.groupId = "com.liferay.portal.ext"
-		}
-	}
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-	classifier = 'javadoc'
-	from javadoc.destinationDir
-}
-
-artifacts {
-	archives sourcesJar
-	archives javadocJar
 }
 
 
