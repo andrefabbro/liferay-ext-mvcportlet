@@ -4,6 +4,11 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
+import com.liferay.portal.kernel.portlet.bridges.mvc.json.PortletJSONResource;
+import com.liferay.portal.kernel.portlet.bridges.mvc.util.CompanyDTO;
+import com.liferay.portal.kernel.portlet.bridges.mvc.util.DTOConverterUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.util.PersonDTO;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -41,6 +46,11 @@ public class MyCoolPortlet extends MVCPortletExtended {
 			.write("executed ajaxMethodTwo");
 		writter
 			.close();
+	}
+
+	@PortletJSONResource(attributeClass = PersonDTO.class)
+	public CompanyDTO ajaxAnnotatedMethodOne(ResourceRequest request, ResourceResponse response, PersonDTO dto) {
+		return DTOConverterUtil.buildCompanyDTO();
 	}
 
 }

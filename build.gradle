@@ -1,5 +1,5 @@
 group 'com.liferay.portal.ext'
-version '0.0.2-SNAPSHOT'
+version '0.0.3-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -7,9 +7,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 repositories {
-	maven {
-		url "http://10.2.10.53/nexus/content/groups/public"
-	}
+	maven { url nexusBGeneral }
 	mavenLocal()
 }
 

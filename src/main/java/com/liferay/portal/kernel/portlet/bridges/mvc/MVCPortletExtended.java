@@ -14,23 +14,9 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletRequestDispatcher;
-import javax.portlet.PortletResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.liferay.portal.kernel.portlet.bridges.mvc.json.PortletJSONResource;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -38,6 +24,14 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
+
+import javax.portlet.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Andre Fabbro
@@ -165,8 +159,7 @@ public class MVCPortletExtended extends MVCPortlet {
 		try {
 			Method method = getResourceMethod(actionName);
 
-			Object invoke = method.invoke(this, resourceRequest, resourceResponse);
-			genericResponse(resourceResponse, invoke);
+			invokeMethod(resourceRequest, resourceResponse, method);
 
 			return true;
 		}
@@ -196,29 +189,61 @@ public class MVCPortletExtended extends MVCPortlet {
 		}
 	}
 
+	private void invokeMethod(ResourceRequest resourceRequest, ResourceResponse resourceResponse, Method method)
+			throws IllegalAccessException, InvocationTargetException, IOException {
+
+		if (!method.isAnnotationPresent(PortletJSONResource.class)) {
+			method.invoke(this, resourceRequest, resourceResponse);
+			return;
+		}
+
+		PortletJSONResource annotation = method.getAnnotation(PortletJSONResource.class);
+		Class attributeClass = annotation.attributeClass();
+
+		Object invoke = method.invoke(this, resourceRequest, resourceResponse,
+				readObjectFromBody(resourceRequest, attributeClass));
+
+		if (annotation.jsonResponse()) {
+			jsonResponse(resourceResponse, invoke);
+		}
+	}
+
 	protected Method getResourceMethod(String actionName)
-		throws NoSuchMethodException {
+			throws NoSuchMethodException {
 
-		Method method = _resourceMethods
-			.get(actionName);
+		Method result = _resourceMethods.get(actionName);
 
-		if (method != null) {
-			return method;
+		if (result != null) {
+			return result;
 		}
 
 		Class<?> clazz = getClass();
 
-		method = clazz
-			.getMethod(
-				actionName, ResourceRequest.class, ResourceResponse.class);
+		result = getMethodByActionName(actionName, clazz);
 
-		_resourceMethods
-			.put(actionName, method);
+		_resourceMethods.put(actionName, result);
 
-		return method;
+		return result;
 	}
 
-	protected <T> T getJSONFromRequest(ResourceRequest request, Class<T> clazz)  {
+	private Method getMethodByActionName(String actionName, Class<?> clazz)
+			throws NoSuchMethodException {
+		try {
+			return clazz.getMethod(actionName, ResourceRequest.class, ResourceResponse.class);
+		} catch (NoSuchMethodException e) {
+			Method[] methods = clazz.getMethods();
+			for (Method method : methods) {
+				if (!method.getName().equals(actionName) || !method.isAnnotationPresent(PortletJSONResource.class)) {
+					continue;
+				}
+				PortletJSONResource annotation = method.getAnnotation(PortletJSONResource.class);
+				return clazz.getMethod(actionName, ResourceRequest.class, ResourceResponse.class, annotation.attributeClass());
+			}
+			throw e;
+		}
+	}
+
+	private <T> T readObjectFromBody(ResourceRequest request, Class<T> clazz)  {
 		StringBuilder buffer = new StringBuilder();
 		try (BufferedReader reader = request.getReader()) {
 			String line;
@@ -231,7 +256,7 @@ public class MVCPortletExtended extends MVCPortlet {
 		return new Gson().fromJson(buffer.toString(), clazz);
 	}
 
-	private void genericResponse(ResourceResponse response, Object object) throws IOException {
+	private void jsonResponse(ResourceResponse response, Object object) throws IOException {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		JSON_MAPPER.writeValue(response.getPortletOutputStream(), object);
