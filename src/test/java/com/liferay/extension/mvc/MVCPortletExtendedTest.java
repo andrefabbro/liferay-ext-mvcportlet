@@ -1,6 +1,6 @@
-package com.liferay.portal.kernel.portlet.bridges.mvc;
+package com.liferay.extension.mvc;
 
-import com.liferay.portal.kernel.portlet.bridges.mvc.util.DTOConverterUtil;
+import com.liferay.extension.mvc.util.DTOConverterUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -12,11 +12,11 @@
  *
  */
 
-package com.liferay.portal.kernel.portlet.bridges.mvc;
+package com.liferay.extension.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.liferay.portal.kernel.portlet.bridges.mvc.json.PortletJSONResource;
+import com.liferay.extension.mvc.json.PortletJSONResource;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;

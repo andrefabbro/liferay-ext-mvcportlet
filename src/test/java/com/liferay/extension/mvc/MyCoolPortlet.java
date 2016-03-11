@@ -2,12 +2,12 @@
  * 
  */
 
-package com.liferay.portal.kernel.portlet.bridges.mvc;
+package com.liferay.extension.mvc;
 
-import com.liferay.portal.kernel.portlet.bridges.mvc.json.PortletJSONResource;
-import com.liferay.portal.kernel.portlet.bridges.mvc.util.CompanyDTO;
-import com.liferay.portal.kernel.portlet.bridges.mvc.util.DTOConverterUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.util.PersonDTO;
+import com.liferay.extension.mvc.json.PortletJSONResource;
+import com.liferay.extension.mvc.util.DTOConverterUtil;
+import com.liferay.extension.mvc.util.PersonDTO;
+import com.liferay.extension.mvc.util.CompanyDTO;
 
 import java.io.IOException;
 import java.io.PrintWriter;

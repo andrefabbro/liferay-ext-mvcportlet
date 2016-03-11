@@ -1,4 +1,4 @@
-package com.liferay.portal.kernel.portlet.bridges.mvc.util;
+package com.liferay.extension.mvc.util;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

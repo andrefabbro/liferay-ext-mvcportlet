@@ -2,7 +2,7 @@
  * 
  */
 
-package com.liferay.portal.kernel.portlet.bridges.mvc;
+package com.liferay.extension.mvc;
 
 import com.liferay.util.bridges.mvc.MVCPortlet;
 

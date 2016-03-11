@@ -1,4 +1,4 @@
-package com.liferay.portal.kernel.portlet.bridges.mvc.json;
+package com.liferay.extension.mvc.json;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
