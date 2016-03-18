@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PortletJSONResource {
 
-    Class attributeClass() default Object.class;
+    Class attributeClass() default void.class;
 
     boolean jsonResponse() default true;
 

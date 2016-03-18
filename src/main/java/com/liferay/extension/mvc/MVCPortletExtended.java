@@ -200,8 +200,13 @@ public class MVCPortletExtended extends MVCPortlet {
 		PortletJSONResource annotation = method.getAnnotation(PortletJSONResource.class);
 		Class attributeClass = annotation.attributeClass();
 
-		Object invoke = method.invoke(this, resourceRequest, resourceResponse,
-				readObjectFromBody(resourceRequest, attributeClass));
+		Object invoke;
+		if (attributeClass != void.class) {
+			invoke = method.invoke(this, resourceRequest, resourceResponse,
+					readObjectFromBody(resourceRequest, attributeClass));
+		} else {
+			invoke = method.invoke(this, resourceRequest, resourceResponse);
+		}
 
 		if (annotation.jsonResponse()) {
 			jsonResponse(resourceResponse, invoke);
