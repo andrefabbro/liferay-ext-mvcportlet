@@ -1,5 +1,5 @@
 group 'com.liferay.portal.ext'
-version '0.0.3-SNAPSHOT'
+version '0.0.4-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -37,7 +37,7 @@ uploadArchives {
 			repository(url: "http://10.2.10.53/nexus/content/repositories/snapshots/") {
 				authentication(userName: "admin", password: "admin123")
 			}
-			pom.version = "0.0.3-SNAPSHOT"
+			pom.version = "0.0.4-SNAPSHOT"
 			pom.artifactId = "mvcportlet-extension"
 			pom.groupId = "com.liferay.portal.ext"
 		}
