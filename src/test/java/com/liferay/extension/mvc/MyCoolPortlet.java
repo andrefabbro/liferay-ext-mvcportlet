@@ -21,36 +21,32 @@ import javax.portlet.ResourceResponse;
  */
 public class MyCoolPortlet extends MVCPortletExtended {
 
-	public void ajaxMethodOne(
-		ResourceRequest resourceRequest, ResourceResponse resourceResponse)
-		throws IOException, PortletException {
+    public void ajaxMethodOne(ResourceRequest resourceRequest,
+	    ResourceResponse resourceResponse)
+	    throws IOException, PortletException {
 
-		PrintWriter writter = resourceResponse
-			.getWriter();
+	PrintWriter writter = resourceResponse.getWriter();
 
-		writter
-			.write("executed ajaxMethodOne");
-		writter
-			.close();
+	writter.write("executed ajaxMethodOne");
+	writter.close();
 
-	}
+    }
 
-	public void ajaxMethodTwo(
-		ResourceRequest resourceRequest, ResourceResponse resourceResponse)
-		throws IOException, PortletException {
+    public void ajaxMethodTwo(ResourceRequest resourceRequest,
+	    ResourceResponse resourceResponse)
+	    throws IOException, PortletException {
 
-		PrintWriter writter = resourceResponse
-			.getWriter();
+	PrintWriter writter = resourceResponse.getWriter();
 
-		writter
-			.write("executed ajaxMethodTwo");
-		writter
-			.close();
-	}
+	writter.write("executed ajaxMethodTwo");
+	writter.close();
+    }
 
-	@PortletJSONResource(attributeClass = PersonDTO.class)
-	public CompanyDTO ajaxAnnotatedMethodOne(ResourceRequest request, ResourceResponse response, PersonDTO dto) {
-		return DTOConverterUtil.buildCompanyDTO();
-	}
+    @PortletJSONResource(attributeClass = PersonDTO.class)
+    public CompanyDTO ajaxAnnotatedMethodOne(ResourceRequest request,
+	    ResourceResponse response, PersonDTO dto) {
+
+	return DTOConverterUtil.buildCompanyDTO();
+    }
 
 }
