@@ -25,110 +25,111 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MVCPortletExtendedTest {
 
-	@Mock
-	private ResourceRequest resourceRequest;
+    @Mock
+    private ResourceRequest resourceRequest;
 
-	@Mock
-	private ResourceResponse resourceResponse;
+    @Mock
+    private ResourceResponse resourceResponse;
 
-	@InjectMocks
-	private MyCoolPortlet myCoolPortlet = new MyCoolPortlet();
+    @InjectMocks
+    private MyCoolPortlet myCoolPortlet = new MyCoolPortlet();
 
-	private BufferedReader reader;
+    private BufferedReader reader;
+
     private PipedInputStream pipeInput;
 
-	@Before
-	public void setUp() {
+    @Before
+    public void setUp() {
 
-		MockitoAnnotations
-			.initMocks(this);
+	MockitoAnnotations.initMocks(this);
 
-		when(resourceResponse
-			.getNamespace())
-				.thenReturn("myCoolPortlet");
-	}
+	when(resourceResponse.getNamespace()).thenReturn("myCoolPortlet");
+    }
 
-	@Test
-	public void invokeCustomResourceMethodAjaxOne()
-		throws IOException, PortletException {
+    @Test
+    public void invokeCustomResourceMethodAjaxOne()
+	    throws IOException, PortletException {
 
-		invokeCustomResourceMethodAjax("ajaxMethodOne");
-	}
+	invokeCustomResourceMethodAjax("ajaxMethodOne");
+    }
 
-	@Test
-	public void invokeCustomResourceMethodAjaxTwo()
-		throws IOException, PortletException {
+    @Test
+    public void invokeCustomResourceMethodAjaxTwo()
+	    throws IOException, PortletException {
 
-		invokeCustomResourceMethodAjax("ajaxMethodTwo");
-	}
+	invokeCustomResourceMethodAjax("ajaxMethodTwo");
+    }
 
     @Test
     public void invokeCustomResourceAnnotatedMethodAjaxOne()
-            throws IOException, PortletException {
+	    throws IOException, PortletException {
 
-        invokeCustomResourceAnnotatedMethodAjax("ajaxAnnotatedMethodOne");
+	invokeCustomResourceAnnotatedMethodAjax("ajaxAnnotatedMethodOne");
     }
 
-	private void invokeCustomResourceMethodAjax(String methodName)
-		throws IOException, PortletException {
+    private void invokeCustomResourceMethodAjax(String methodName)
+	    throws IOException, PortletException {
 
-        commonLogic(methodName);
+	commonLogic(methodName);
 
-        assertEquals("executed " + methodName, reader.readLine());
+	assertEquals("executed " + methodName, reader.readLine());
     }
 
     private void invokeCustomResourceAnnotatedMethodAjax(String methodName)
-            throws IOException, PortletException {
+	    throws IOException, PortletException {
 
-        prepareReaderForRequest();
-        prepareOutputStreamForResponse();
-        commonLogic(methodName);
+	prepareReaderForRequest();
+	prepareOutputStreamForResponse();
+	commonLogic(methodName);
 
-        assertEquals(DTOConverterUtil.buildCompanyJSON(), readResponse());
+	assertEquals(DTOConverterUtil.buildCompanyJSON(), readResponse());
     }
 
-    private void prepareWriterForResponse()
-            throws IOException {
+    private void prepareWriterForResponse() throws IOException {
 
-        PipedInputStream pipeInput = new PipedInputStream();
-        reader = new BufferedReader(new InputStreamReader(pipeInput));
-        BufferedOutputStream out = new BufferedOutputStream(new PipedOutputStream(pipeInput));
+	PipedInputStream pipeInput = new PipedInputStream();
+	reader = new BufferedReader(new InputStreamReader(pipeInput));
+	BufferedOutputStream out = new BufferedOutputStream(
+		new PipedOutputStream(pipeInput));
 
-        when(resourceResponse.getWriter()).thenReturn(new PrintWriter(out));
+	when(resourceResponse.getWriter()).thenReturn(new PrintWriter(out));
     }
 
-    private void prepareReaderForRequest()
-            throws IOException {
+    private void prepareReaderForRequest() throws IOException {
 
-        BufferedReader mockReader = mock(BufferedReader.class);
-        when(mockReader.readLine()).thenReturn(DTOConverterUtil.buildCompanyJSON()).thenReturn(null);
-        when(resourceRequest.getReader()).thenReturn(mockReader);
+	BufferedReader mockReader = mock(BufferedReader.class);
+	when(mockReader.readLine())
+		.thenReturn(DTOConverterUtil.buildCompanyJSON())
+		.thenReturn(null);
+	when(resourceRequest.getReader()).thenReturn(mockReader);
     }
 
-    private void prepareOutputStreamForResponse()
-            throws IOException {
+    private void prepareOutputStreamForResponse() throws IOException {
 
-        pipeInput = new PipedInputStream();
-        OutputStream portletOutputStream = new PipedOutputStream(pipeInput);
-        when(resourceResponse.getPortletOutputStream()).thenReturn(portletOutputStream);
+	pipeInput = new PipedInputStream();
+	OutputStream portletOutputStream = new PipedOutputStream(pipeInput);
+	when(resourceResponse.getPortletOutputStream())
+		.thenReturn(portletOutputStream);
     }
 
     private void commonLogic(String methodName)
-            throws IOException, PortletException {
+	    throws IOException, PortletException {
 
-        prepareWriterForResponse();
-        when(resourceRequest.getParameter(ActionRequest.ACTION_NAME)).thenReturn(methodName);
-        myCoolPortlet.serveResource(resourceRequest, resourceResponse);
+	prepareWriterForResponse();
+	when(resourceRequest.getParameter(ActionRequest.ACTION_NAME))
+		.thenReturn(methodName);
+	myCoolPortlet.serveResource(resourceRequest, resourceResponse);
     }
 
     private String readResponse() throws IOException {
-        String result = "";
-        byte[] buffer = new byte[1024];
-        int read;
-        while ((read = pipeInput.read(buffer)) != -1) {
-            result = result.concat(new String(buffer, 0, read));
-        }
-        return result;
+
+	String result = "";
+	byte[] buffer = new byte[1024];
+	int read;
+	while ((read = pipeInput.read(buffer)) != -1) {
+	    result = result.concat(new String(buffer, 0, read));
+	}
+	return result;
     }
 
 }
