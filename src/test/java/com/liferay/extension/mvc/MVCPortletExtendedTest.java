@@ -1,6 +1,23 @@
 package com.liferay.extension.mvc;
 
-import com.liferay.extension.mvc.util.DTOConverterUtil;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.PrintWriter;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.PortletException;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,15 +26,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletException;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import java.io.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.liferay.extension.mvc.util.DTOConverterUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.theme.PortletDisplay;
+import com.liferay.portal.theme.ThemeDisplay;
 
 /**
  * @author Andre Fabbro
@@ -25,11 +38,24 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MVCPortletExtendedTest {
 
+    private static final String PORTLET_PK = "00001";
+
+    private static final String PORTLET_NAME = "myCoolPortlet";
+
     @Mock
     private ResourceRequest resourceRequest;
 
     @Mock
     private ResourceResponse resourceResponse;
+
+    @Mock
+    private ThemeDisplay themeDisplay;
+
+    @Mock
+    private PermissionChecker permissionChecker;
+
+    @Mock
+    private PortletDisplay portletDisplay;
 
     @InjectMocks
     private MyCoolPortlet myCoolPortlet = new MyCoolPortlet();
@@ -43,7 +69,43 @@ public class MVCPortletExtendedTest {
 
 	MockitoAnnotations.initMocks(this);
 
-	when(resourceResponse.getNamespace()).thenReturn("myCoolPortlet");
+	when(resourceResponse.getNamespace()).thenReturn(PORTLET_NAME);
+    }
+
+    @Test
+    public void invokeSecuredAnnotatedMethodSuccess() throws Exception {
+
+	when(permissionChecker.isOmniadmin()).thenReturn(false);
+	when(permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
+		"ADD_RESOURCE")).thenReturn(true);
+	when(permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
+		"EDIT_RESOURCE")).thenReturn(true);
+
+	invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
+    }
+
+    @Test(expected = PortletException.class)
+    public void invokeSecuredAnnotatedMethodFail() throws Exception {
+
+	when(permissionChecker.isOmniadmin()).thenReturn(false);
+	when(permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
+		"ADD_RESOURCE")).thenReturn(true);
+	when(permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
+		"EDIT_RESOURCE")).thenReturn(false);
+
+	invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
+    }
+
+    @Test
+    public void dontConsiderOmniUserInPermissionChecker() throws Exception {
+
+	when(permissionChecker.isOmniadmin()).thenReturn(true);
+	when(permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
+		"ADD_RESOURCE")).thenReturn(false);
+	when(permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
+		"EDIT_RESOURCE")).thenReturn(false);
+
+	invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
     }
 
     @Test
@@ -102,6 +164,16 @@ public class MVCPortletExtendedTest {
 		.thenReturn(DTOConverterUtil.buildCompanyJSON())
 		.thenReturn(null);
 	when(resourceRequest.getReader()).thenReturn(mockReader);
+
+	when(portletDisplay.getPortletName()).thenReturn(PORTLET_NAME);
+	when(portletDisplay.getResourcePK()).thenReturn(PORTLET_PK);
+
+	when(themeDisplay.getPermissionChecker()).thenReturn(permissionChecker);
+	when(themeDisplay.getScopeGroupId()).thenReturn(0l);
+	when(themeDisplay.getPortletDisplay()).thenReturn(portletDisplay);
+
+	when(resourceRequest.getAttribute(WebKeys.THEME_DISPLAY))
+		.thenReturn(themeDisplay);
     }
 
     private void prepareOutputStreamForResponse() throws IOException {
