@@ -73,70 +73,73 @@ public class MVCPortletExtendedTest {
 	}
 
 	@Test
-	public void invokeSecuredAnnotatedMethodSuccess() throws Exception {
+	public void invokeSecuredAnnotatedMethodSuccess()
+		throws Exception {
 
 		when(permissionChecker.isOmniadmin()).thenReturn(false);
 		when(
-				permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
-						"ADD_RESOURCE")).thenReturn(true);
+			permissionChecker.hasPermission(
+				0, PORTLET_NAME, PORTLET_PK, "ADD_RESOURCE")).thenReturn(true);
 		when(
-				permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
-						"EDIT_RESOURCE")).thenReturn(true);
+			permissionChecker.hasPermission(
+				0, PORTLET_NAME, PORTLET_PK, "EDIT_RESOURCE")).thenReturn(true);
 
 		invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
 	}
 
 	@Test(expected = PortletException.class)
-	public void invokeSecuredAnnotatedMethodFail() throws Exception {
+	public void invokeSecuredAnnotatedMethodFail()
+		throws Exception {
 
 		when(permissionChecker.isOmniadmin()).thenReturn(false);
 		when(
-				permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
-						"ADD_RESOURCE")).thenReturn(true);
+			permissionChecker.hasPermission(
+				0, PORTLET_NAME, PORTLET_PK, "ADD_RESOURCE")).thenReturn(true);
 		when(
-				permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
-						"EDIT_RESOURCE")).thenReturn(false);
+			permissionChecker.hasPermission(
+				0, PORTLET_NAME, PORTLET_PK, "EDIT_RESOURCE")).thenReturn(false);
 
 		invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
 	}
 
 	@Test
-	public void dontConsiderOmniUserInPermissionChecker() throws Exception {
+	public void dontConsiderOmniUserInPermissionChecker()
+		throws Exception {
 
 		when(permissionChecker.isOmniadmin()).thenReturn(true);
 		when(
-				permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
-						"ADD_RESOURCE")).thenReturn(false);
+			permissionChecker.hasPermission(
+				0, PORTLET_NAME, PORTLET_PK, "ADD_RESOURCE")).thenReturn(false);
 		when(
-				permissionChecker.hasPermission(0, PORTLET_NAME, PORTLET_PK,
-						"EDIT_RESOURCE")).thenReturn(false);
+			permissionChecker.hasPermission(
+				0, PORTLET_NAME, PORTLET_PK, "EDIT_RESOURCE")).thenReturn(false);
 
 		invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
 	}
 
 	@Test
-	public void invokeCustomResourceMethodAjaxOne() throws IOException,
-			PortletException {
+	public void invokeCustomResourceMethodAjaxOne()
+		throws IOException, PortletException {
 
 		invokeCustomResourceMethodAjax("ajaxMethodOne");
 	}
 
 	@Test
-	public void invokeCustomResourceMethodAjaxTwo() throws IOException,
-			PortletException {
+	public void invokeCustomResourceMethodAjaxTwo()
+		throws IOException, PortletException {
 
 		invokeCustomResourceMethodAjax("ajaxMethodTwo");
 	}
 
 	@Test
 	public void invokeCustomResourceAnnotatedMethodAjaxOne()
-			throws IOException, PortletException {
+		throws IOException, PortletException {
 
 		invokeCustomResourceAnnotatedMethodAjax("ajaxAnnotatedMethodOne");
 	}
 
 	private void invokeCustomResourceMethodAjax(String methodName)
-			throws IOException, PortletException {
+		throws IOException, PortletException {
 
 		commonLogic(methodName);
 
@@ -144,7 +147,7 @@ public class MVCPortletExtendedTest {
 	}
 
 	private void invokeCustomResourceAnnotatedMethodAjax(String methodName)
-			throws IOException, PortletException {
+		throws IOException, PortletException {
 
 		prepareReaderForRequest();
 		prepareOutputStreamForResponse();
@@ -153,21 +156,23 @@ public class MVCPortletExtendedTest {
 		assertEquals(DTOConverterUtil.buildCompanyJSON(), readResponse());
 	}
 
-	private void prepareWriterForResponse() throws IOException {
+	private void prepareWriterForResponse()
+		throws IOException {
 
 		PipedInputStream pipeInput = new PipedInputStream();
 		reader = new BufferedReader(new InputStreamReader(pipeInput));
-		BufferedOutputStream out = new BufferedOutputStream(
-				new PipedOutputStream(pipeInput));
+		BufferedOutputStream out =
+			new BufferedOutputStream(new PipedOutputStream(pipeInput));
 
 		when(resourceResponse.getWriter()).thenReturn(new PrintWriter(out));
 	}
 
-	private void prepareReaderForRequest() throws IOException {
+	private void prepareReaderForRequest()
+		throws IOException {
 
 		BufferedReader mockReader = mock(BufferedReader.class);
 		when(mockReader.readLine()).thenReturn(
-				DTOConverterUtil.buildCompanyJSON()).thenReturn(null);
+			DTOConverterUtil.buildCompanyJSON()).thenReturn(null);
 		when(resourceRequest.getReader()).thenReturn(mockReader);
 
 		when(portletDisplay.getPortletName()).thenReturn(PORTLET_NAME);
@@ -178,27 +183,29 @@ public class MVCPortletExtendedTest {
 		when(themeDisplay.getPortletDisplay()).thenReturn(portletDisplay);
 
 		when(resourceRequest.getAttribute(WebKeys.THEME_DISPLAY)).thenReturn(
-				themeDisplay);
+			themeDisplay);
 	}
 
-	private void prepareOutputStreamForResponse() throws IOException {
+	private void prepareOutputStreamForResponse()
+		throws IOException {
 
 		pipeInput = new PipedInputStream();
 		OutputStream portletOutputStream = new PipedOutputStream(pipeInput);
 		when(resourceResponse.getPortletOutputStream()).thenReturn(
-				portletOutputStream);
+			portletOutputStream);
 	}
 
-	private void commonLogic(String methodName) throws IOException,
-			PortletException {
+	private void commonLogic(String methodName)
+		throws IOException, PortletException {
 
 		prepareWriterForResponse();
-		when(resourceRequest.getParameter(ActionRequest.ACTION_NAME))
-				.thenReturn(methodName);
+		when(resourceRequest.getParameter(ActionRequest.ACTION_NAME)).thenReturn(
+			methodName);
 		myCoolPortlet.serveResource(resourceRequest, resourceResponse);
 	}
 
-	private String readResponse() throws IOException {
+	private String readResponse()
+		throws IOException {
 
 		String result = "";
 		byte[] buffer = new byte[1024];
