@@ -193,8 +193,11 @@ public class MVCPortletExtended extends MVCPortlet {
      * {@link com.liferay.extension.mvc.security.PortletSecured PortletSecured}
      * 
      * @param portletRequest
+     *            - the portlet request
      * @param method
+     *            - the method name
      * @throws PrincipalException
+     *             - for unauthorized access
      */
     protected void checkPermissions(PortletRequest portletRequest, Method method)
         throws PrincipalException {
@@ -245,7 +248,7 @@ public class MVCPortletExtended extends MVCPortlet {
 
         PortletJSONResource annotation =
             method.getAnnotation(PortletJSONResource.class);
-        Class attributeClass = annotation.attributeClass();
+        Class<?> attributeClass = annotation.attributeClass();
 
         Object invoke;
         if (attributeClass != void.class) {
