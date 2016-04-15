@@ -55,5 +55,19 @@ public class MyCoolPortlet extends MVCPortletExtended {
 
         return DTOConverterUtil.buildCompanyDTO();
     }
+    
+    @PortletJSONResource(attributeClass = PersonDTO.class)
+    public void ajaxAnnotatedMethodOneThatReturnsVoid(
+            ResourceRequest request, ResourceResponse response, PersonDTO dto)
+            throws IOException, PortletException{
+        
+        if(dto == null) 
+            System.out.println("DTO is NULL...!!!!!!!!!!!!!!");
+        
+        PrintWriter writter = response.getWriter();
+
+        writter.write("executed ajaxAnnotatedMethodOneThatReturnsVoid");
+        writter.close();
+    }
 
 }
