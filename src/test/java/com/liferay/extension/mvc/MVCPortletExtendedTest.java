@@ -132,6 +132,17 @@ public class MVCPortletExtendedTest {
 	}
 	
 	@Test
+    public void invokeAnnotatedMethodThatReturnsMap() 
+         throws Exception {
+        
+	    prepareReaderForRequest();
+        prepareOutputStreamForResponse();
+        commonLogic("ajaxAnnotatedMethodOneThatReturnsMap");
+
+        assertEquals(DTOConverterUtil.buildCustomMapJSON(), readResponse());
+    }
+	
+	@Test
     public void invokeAnnotatedMethodThatReturnsVoid() 
          throws Exception {
         

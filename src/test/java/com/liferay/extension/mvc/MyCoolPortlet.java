@@ -2,6 +2,8 @@ package com.liferay.extension.mvc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
@@ -68,6 +70,14 @@ public class MyCoolPortlet extends MVCPortletExtended {
 
         writter.write("executed ajaxAnnotatedMethodOneThatReturnsVoid");
         writter.close();
+    }
+    
+    @PortletJSONResource
+    public Map<Integer, String> ajaxAnnotatedMethodOneThatReturnsMap(
+            ResourceRequest request, ResourceResponse response) throws 
+            IOException, PortletException {
+
+        return DTOConverterUtil.buildCustomMap();
     }
 
 }
