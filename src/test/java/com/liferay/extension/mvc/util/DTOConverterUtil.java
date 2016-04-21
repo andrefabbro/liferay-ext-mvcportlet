@@ -1,11 +1,13 @@
 package com.liferay.extension.mvc.util;
 
-import com.google.gson.Gson;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.Gson;
 
 /**
  * Utility for get test DTOs in the test suites
@@ -38,6 +40,33 @@ public class DTOConverterUtil {
         companyDTO.setId(123465789L);
 
         return companyDTO;
+    }
+    
+    /**
+     * Build a custom Map for testing purpose
+     * 
+     * @return Map<Integer, String>
+     */
+    public static Map<Integer, String> buildCustomMap() {
+        Map<Integer, String> rs = new HashMap<Integer, String>();
+
+        rs.put(1, "Brazil");
+        rs.put(2, "Panama");
+        rs.put(3, "Colombia");
+        rs.put(4, "Venezuela");
+        rs.put(5, "Argentina");
+        rs.put(6, "Chile");
+        
+        return rs;
+    }
+    
+    /**
+     * Build a custom Map in JSON format for testing purpose
+     * 
+     * @return Map<Integer, String>
+     */
+    public static String buildCustomMapJSON() {
+        return new Gson().toJson(buildCustomMap());
     }
 
     /**

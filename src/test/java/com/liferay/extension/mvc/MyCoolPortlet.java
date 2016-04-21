@@ -2,6 +2,8 @@ package com.liferay.extension.mvc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
@@ -54,6 +56,28 @@ public class MyCoolPortlet extends MVCPortletExtended {
         ResourceRequest request, ResourceResponse response, PersonDTO dto) {
 
         return DTOConverterUtil.buildCompanyDTO();
+    }
+    
+    @PortletJSONResource(attributeClass = PersonDTO.class)
+    public void ajaxAnnotatedMethodOneThatReturnsVoid(
+            ResourceRequest request, ResourceResponse response, PersonDTO dto)
+            throws IOException, PortletException{
+        
+        if(dto == null) 
+            System.out.println("DTO is NULL...!!!!!!!!!!!!!!");
+        
+        PrintWriter writter = response.getWriter();
+
+        writter.write("executed ajaxAnnotatedMethodOneThatReturnsVoid");
+        writter.close();
+    }
+    
+    @PortletJSONResource
+    public Map<Integer, String> ajaxAnnotatedMethodOneThatReturnsMap(
+            ResourceRequest request, ResourceResponse response) throws 
+            IOException, PortletException {
+
+        return DTOConverterUtil.buildCustomMap();
     }
 
 }
