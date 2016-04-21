@@ -24,7 +24,6 @@ import javax.portlet.PortletResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.liferay.extension.mvc.json.PortletJSONResource;
 import com.liferay.extension.mvc.security.PortletSecured;
@@ -46,7 +45,6 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
  */
 public class MVCPortletExtended extends MVCPortlet {
 
-    protected static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private final Map<String, Method> _resourceMethods =
         new ConcurrentHashMap<>();
 
@@ -191,10 +189,10 @@ public class MVCPortletExtended extends MVCPortlet {
     /**
      * Check the permissions based on the annotation
      * {@link com.liferay.extension.mvc.security.PortletSecured PortletSecured}
-     * 
-     * @param portletRequest
-     * @param method
-     * @throws PrincipalException
+     *
+     * @param portletRequest user request
+     * @param method method to call
+     * @throws PrincipalException if the user in the request has not permissions
      */
     protected void checkPermissions(PortletRequest portletRequest, Method method)
         throws PrincipalException {
@@ -325,7 +323,9 @@ public class MVCPortletExtended extends MVCPortlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        JSON_MAPPER.writeValue(response.getPortletOutputStream(), object);
+
+        String json = new Gson().toJson(object);
+        response.getPortletOutputStream().write(json.getBytes("UTF-8"));
     }
 
 }
