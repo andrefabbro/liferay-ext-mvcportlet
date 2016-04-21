@@ -1,5 +1,5 @@
 group 'com.liferay.portal.ext'
-version '0.0.5-SNAPSHOT'
+version '0.0.6-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -30,7 +30,6 @@ dependencies {
 	
 	compile "javax.portlet:portlet-api:2.0"
 	compile "javax.servlet:servlet-api:2.4"
-	compile "com.fasterxml.jackson.core:jackson-databind:2.3.3"
 	compile 'com.google.code.gson:gson:2.6.2'
 	
     testCompile "junit:junit:4.12"
@@ -40,10 +39,10 @@ dependencies {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url: "http://10.2.10.53/nexus/content/repositories/snapshots/") {
+			repository(url: "http://desacllrdevops:8081/nexus/content/repositories/snapshots/") {
 				authentication(userName: "admin", password: "admin123")
 			}
-			pom.version = "0.0.5-SNAPSHOT"
+			pom.version = "0.0.6-SNAPSHOT"
 			pom.artifactId = "mvcportlet-extension"
 			pom.groupId = "com.liferay.portal.ext"
 		}

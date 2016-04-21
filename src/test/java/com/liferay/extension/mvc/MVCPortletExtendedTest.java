@@ -71,7 +71,7 @@ public class MVCPortletExtendedTest {
 
 		when(resourceResponse.getNamespace()).thenReturn(PORTLET_NAME);
 	}
-
+	
 	@Test
 	public void invokeSecuredAnnotatedMethodSuccess()
 		throws Exception {
@@ -117,7 +117,7 @@ public class MVCPortletExtendedTest {
 		invokeCustomResourceAnnotatedMethodAjax("ajaxSecuredAnnotatedMethod");
 	}
 
-	@Test
+    @Test
 	public void invokeCustomResourceMethodAjaxOne()
 		throws IOException, PortletException {
 
@@ -130,6 +130,27 @@ public class MVCPortletExtendedTest {
 
 		invokeCustomResourceMethodAjax("ajaxMethodTwo");
 	}
+	
+	@Test
+    public void invokeAnnotatedMethodThatReturnsMap() 
+         throws Exception {
+        
+	    prepareReaderForRequest();
+        prepareOutputStreamForResponse();
+        commonLogic("ajaxAnnotatedMethodOneThatReturnsMap");
+
+        assertEquals(DTOConverterUtil.buildCustomMapJSON(), readResponse());
+    }
+	
+	@Test
+    public void invokeAnnotatedMethodThatReturnsVoid() 
+         throws Exception {
+        
+	    prepareReaderForRequest();
+        prepareOutputStreamForResponse();
+        
+        invokeCustomResourceMethodAjax("ajaxAnnotatedMethodOneThatReturnsVoid");
+    }
 
 	@Test
 	public void invokeCustomResourceAnnotatedMethodAjaxOne()
