@@ -39,7 +39,7 @@ dependencies {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url: "http://10.2.10.53/nexus/content/repositories/snapshots/") {
+			repository(url: "http://desacllrdevops:8081/nexus/content/repositories/snapshots/") {
 				authentication(userName: "admin", password: "admin123")
 			}
 			pom.version = "0.0.6-SNAPSHOT"
