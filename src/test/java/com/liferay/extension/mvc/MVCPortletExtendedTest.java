@@ -229,11 +229,11 @@ public class MVCPortletExtendedTest {
 		throws IOException {
 
 		String result = "";
-		byte[] buffer = new byte[1024];
-		int read;
-		while ((read = pipeInput.read(buffer)) != -1) {
-			result = result.concat(new String(buffer, 0, read));
-		}
+		byte[] buffer = new byte[2048];
+		
+		int r = pipeInput.read(buffer);
+		result = result.concat(new String(buffer, 0, r));
+		
 		return result;
 	}
 
